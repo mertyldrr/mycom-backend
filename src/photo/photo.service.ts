@@ -42,7 +42,7 @@ export class PhotoService {
         obj['url'] = url;
         imageUrls.push(obj);
       }
-      return JSON.stringify(imageUrls);
+      return imageUrls;
     }
   }
 }
