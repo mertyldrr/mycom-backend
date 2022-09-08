@@ -5,6 +5,10 @@ import { PhotoService } from './photo.service';
 @Controller()
 export class PhotoController {
   constructor(private photoService: PhotoService) {}
+  @Get()
+  sayHello() {
+    return `Hello World`;
+  }
   @Get('photos')
   async getPhotos(@Req() req: Request, @Res() res: Response) {
     const photos = await this.photoService.getPhotos();
