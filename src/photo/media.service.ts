@@ -6,7 +6,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 @Injectable({})
-export class mediaService {
+export class MediaService {
   s3BucketName = process.env.S3_BUCKET_NAME;
   s3BucketRegion = process.env.S3_BUCKET_REGION;
   accessKey = process.env.AWS_ACCESS_KEY_ID;

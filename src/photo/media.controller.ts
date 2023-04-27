@@ -1,10 +1,10 @@
 import { Controller, Get, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { mediaService } from './media.service';
+import { MediaService } from './media.service';
 
 @Controller()
 export class MediaController {
-  constructor(private mediaService: mediaService) {}
+  constructor(private mediaService: MediaService) {}
   @Get()
   sayHello() {
     return `Hello World`;
