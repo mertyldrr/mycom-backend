@@ -7,7 +7,7 @@ export class MediaController {
   constructor(private mediaService: MediaService) {}
   @Get()
   sayHello() {
-    return `Hello World`;
+    return `Backend is up!`;
   }
   @Get('icons')
   async getIcons(@Req() req: Request, @Res() res: Response) {
@@ -30,7 +30,20 @@ export class MediaController {
        */
       res.json(photos);
     } else {
-      res.status(400).json({ msg: 'Icons are not found' });
+      res.status(400).json({ msg: 'Photos are not found' });
+    }
+  }
+
+  @Get('plangicons')
+  async getPlangIcons(@Req() req: Request, @Res() res: Response) {
+    const photos = await this.mediaService.getPlangIcons();
+    if (photos) {
+      /*
+       * res.json eventually calls res.send but also ensures the response will have utf-8 charset and application/json Content-Type
+       */
+      res.json(photos);
+    } else {
+      res.status(400).json({ msg: 'Programming language icons are not found' });
     }
   }
 }

@@ -78,4 +78,33 @@ export class MediaService {
       return imageUrls;
     }
   }
+  async getPlangIcons() {
+    const listParams = {
+      Bucket: this.s3BucketName,
+      Delimeter: '/',
+      Prefix: 'media/plangicons/',
+    };
+    const {
+      Name,
+      $metadata: response,
+      Contents: images,
+    } = await this.s3Client.send(new ListObjectsCommand(listParams));
+    if (response.httpStatusCode === 200) {
+      const imageUrls = [];
+      for (const image of images) {
+        const obj = {};
+        const signedUrlParams = {
+          Bucket: Name,
+          Key: image.Key,
+        };
+        const getObjectCommand = new GetObjectCommand(signedUrlParams);
+        const url = await getSignedUrl(this.s3Client, getObjectCommand, {
+          expiresIn: 60,
+        });
+        obj['url'] = url;
+        imageUrls.push(obj);
+      }
+      return imageUrls;
+    }
+  }
 }
