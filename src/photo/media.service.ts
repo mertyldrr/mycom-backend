@@ -3,6 +3,7 @@ import {
   S3Client,
   GetObjectCommand,
   ListObjectsCommand,
+  HeadObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 @Injectable({})
@@ -42,7 +43,17 @@ export class MediaService {
         const url = await getSignedUrl(this.s3Client, getObjectCommand, {
           expiresIn: 60,
         });
+        // Fetch object metadata using headObject command
+        const headObjectParams = {
+          Bucket: Name,
+          Key: image.Key,
+        };
+        const headObjectCommand = new HeadObjectCommand(headObjectParams);
+        const { Metadata: metadata } = await this.s3Client.send(
+          headObjectCommand,
+        );
         obj['url'] = url;
+        obj['href'] = metadata.href;
         imageUrls.push(obj);
       }
       return imageUrls;
