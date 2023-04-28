@@ -34,27 +34,29 @@ export class MediaService {
     if (response.httpStatusCode === 200) {
       const imageUrls = [];
       for (const image of images) {
-        const obj = {};
-        const signedUrlParams = {
-          Bucket: Name,
-          Key: image.Key,
-        };
-        const getObjectCommand = new GetObjectCommand(signedUrlParams);
-        const url = await getSignedUrl(this.s3Client, getObjectCommand, {
-          expiresIn: 60,
-        });
-        // Fetch object metadata using headObject command
-        const headObjectParams = {
-          Bucket: Name,
-          Key: image.Key,
-        };
-        const headObjectCommand = new HeadObjectCommand(headObjectParams);
-        const { Metadata: metadata } = await this.s3Client.send(
-          headObjectCommand,
-        );
-        obj['url'] = url;
-        obj['href'] = metadata.href;
-        imageUrls.push(obj);
+        if (image.Size > 0) {
+          const obj = {};
+          const signedUrlParams = {
+            Bucket: Name,
+            Key: image.Key,
+          };
+          const getObjectCommand = new GetObjectCommand(signedUrlParams);
+          const url = await getSignedUrl(this.s3Client, getObjectCommand, {
+            expiresIn: 60,
+          });
+          // Fetch object metadata using headObject command
+          const headObjectParams = {
+            Bucket: Name,
+            Key: image.Key,
+          };
+          const headObjectCommand = new HeadObjectCommand(headObjectParams);
+          const { Metadata: metadata } = await this.s3Client.send(
+            headObjectCommand,
+          );
+          obj['url'] = url;
+          obj['href'] = metadata.href;
+          imageUrls.push(obj);
+        }
       }
       return imageUrls;
     }
@@ -74,17 +76,19 @@ export class MediaService {
     if (response.httpStatusCode === 200) {
       const imageUrls = [];
       for (const image of images) {
-        const obj = {};
-        const signedUrlParams = {
-          Bucket: Name,
-          Key: image.Key,
-        };
-        const getObjectCommand = new GetObjectCommand(signedUrlParams);
-        const url = await getSignedUrl(this.s3Client, getObjectCommand, {
-          expiresIn: 60,
-        });
-        obj['url'] = url;
-        imageUrls.push(obj);
+        if (image.Size > 0) {
+          const obj = {};
+          const signedUrlParams = {
+            Bucket: Name,
+            Key: image.Key,
+          };
+          const getObjectCommand = new GetObjectCommand(signedUrlParams);
+          const url = await getSignedUrl(this.s3Client, getObjectCommand, {
+            expiresIn: 60,
+          });
+          obj['url'] = url;
+          imageUrls.push(obj);
+        }
       }
       return imageUrls;
     }
@@ -103,17 +107,19 @@ export class MediaService {
     if (response.httpStatusCode === 200) {
       const imageUrls = [];
       for (const image of images) {
-        const obj = {};
-        const signedUrlParams = {
-          Bucket: Name,
-          Key: image.Key,
-        };
-        const getObjectCommand = new GetObjectCommand(signedUrlParams);
-        const url = await getSignedUrl(this.s3Client, getObjectCommand, {
-          expiresIn: 60,
-        });
-        obj['url'] = url;
-        imageUrls.push(obj);
+        if (image.Size > 0) {
+          const obj = {};
+          const signedUrlParams = {
+            Bucket: Name,
+            Key: image.Key,
+          };
+          const getObjectCommand = new GetObjectCommand(signedUrlParams);
+          const url = await getSignedUrl(this.s3Client, getObjectCommand, {
+            expiresIn: 60,
+          });
+          obj['url'] = url;
+          imageUrls.push(obj);
+        }
       }
       return imageUrls;
     }
