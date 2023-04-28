@@ -42,7 +42,7 @@ export class MediaService {
           };
           const getObjectCommand = new GetObjectCommand(signedUrlParams);
           const url = await getSignedUrl(this.s3Client, getObjectCommand, {
-            expiresIn: 60,
+            expiresIn: 24 * 60 * 60,
           });
           // Fetch object metadata using headObject command
           const headObjectParams = {
@@ -84,7 +84,7 @@ export class MediaService {
           };
           const getObjectCommand = new GetObjectCommand(signedUrlParams);
           const url = await getSignedUrl(this.s3Client, getObjectCommand, {
-            expiresIn: 60,
+            expiresIn: 24 * 60 * 60,
           });
           obj['url'] = url;
           imageUrls.push(obj);
@@ -115,7 +115,7 @@ export class MediaService {
           };
           const getObjectCommand = new GetObjectCommand(signedUrlParams);
           const url = await getSignedUrl(this.s3Client, getObjectCommand, {
-            expiresIn: 60,
+            expiresIn: 24 * 60 * 60,
           });
           obj['url'] = url;
           imageUrls.push(obj);
