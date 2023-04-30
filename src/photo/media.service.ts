@@ -36,14 +36,6 @@ export class MediaService {
       for (const image of images) {
         if (image.Size > 0) {
           const obj = {};
-          const signedUrlParams = {
-            Bucket: Name,
-            Key: image.Key,
-          };
-          const getObjectCommand = new GetObjectCommand(signedUrlParams);
-          const url = await getSignedUrl(this.s3Client, getObjectCommand, {
-            expiresIn: 24 * 60 * 60,
-          });
           // Fetch object metadata using headObject command
           const headObjectParams = {
             Bucket: Name,
@@ -53,7 +45,7 @@ export class MediaService {
           const { Metadata: metadata } = await this.s3Client.send(
             headObjectCommand,
           );
-          obj['url'] = url;
+          obj['url'] = `${process.env.STATIC_BASE_URL}/${image.Key}`;
           obj['href'] = metadata.href;
           imageUrls.push(obj);
         }
@@ -78,15 +70,7 @@ export class MediaService {
       for (const image of images) {
         if (image.Size > 0) {
           const obj = {};
-          const signedUrlParams = {
-            Bucket: Name,
-            Key: image.Key,
-          };
-          const getObjectCommand = new GetObjectCommand(signedUrlParams);
-          const url = await getSignedUrl(this.s3Client, getObjectCommand, {
-            expiresIn: 24 * 60 * 60,
-          });
-          obj['url'] = url;
+          obj['url'] = `${process.env.STATIC_BASE_URL}/${image.Key}`;
           imageUrls.push(obj);
         }
       }
@@ -109,19 +93,35 @@ export class MediaService {
       for (const image of images) {
         if (image.Size > 0) {
           const obj = {};
-          const signedUrlParams = {
-            Bucket: Name,
-            Key: image.Key,
-          };
-          const getObjectCommand = new GetObjectCommand(signedUrlParams);
-          const url = await getSignedUrl(this.s3Client, getObjectCommand, {
-            expiresIn: 24 * 60 * 60,
-          });
-          obj['url'] = url;
+          obj['url'] = `${process.env.STATIC_BASE_URL}/${image.Key}`;
           imageUrls.push(obj);
         }
       }
       return imageUrls;
+    }
+  }
+
+  async getCV() {
+    const listParams = {
+      Bucket: this.s3BucketName,
+      Delimeter: '/',
+      Prefix: 'media/cv/',
+    };
+    const {
+      Name,
+      $metadata: response,
+      Contents: files,
+    } = await this.s3Client.send(new ListObjectsCommand(listParams));
+    if (response.httpStatusCode === 200) {
+      let cvUrl;
+      for (const file of files) {
+        if (file.Size > 0) {
+          const obj = {};
+          obj['url'] = `${process.env.STATIC_BASE_URL}/${file.Key}`;
+          cvUrl = obj;
+        }
+      }
+      return cvUrl;
     }
   }
 }

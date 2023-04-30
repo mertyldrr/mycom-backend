@@ -46,4 +46,17 @@ export class MediaController {
       res.status(400).json({ msg: 'Programming language icons are not found' });
     }
   }
+
+  @Get('CV')
+  async getCV(@Req() req: Request, @Res() res: Response) {
+    const cv = await this.mediaService.getCV();
+    if (cv) {
+      /*
+       * res.json eventually calls res.send but also ensures the response will have utf-8 charset and application/json Content-Type
+       */
+      res.json(cv);
+    } else {
+      res.status(400).json({ msg: 'CV is not found' });
+    }
+  }
 }
