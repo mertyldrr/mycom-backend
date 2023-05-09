@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import {
   S3Client,
-  GetObjectCommand,
   ListObjectsCommand,
   HeadObjectCommand,
 } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 @Injectable({})
 export class MediaService {
   s3BucketName = process.env.S3_BUCKET_NAME;
@@ -20,6 +18,7 @@ export class MediaService {
     },
     region: this.s3BucketRegion,
   });
+
   async getIcons() {
     const listParams = {
       Bucket: this.s3BucketName,
@@ -60,11 +59,9 @@ export class MediaService {
       Delimeter: '/',
       Prefix: 'media/photos/',
     };
-    const {
-      Name,
-      $metadata: response,
-      Contents: images,
-    } = await this.s3Client.send(new ListObjectsCommand(listParams));
+    const { $metadata: response, Contents: images } = await this.s3Client.send(
+      new ListObjectsCommand(listParams),
+    );
     if (response.httpStatusCode === 200) {
       const imageUrls = [];
       for (const image of images) {
@@ -83,11 +80,31 @@ export class MediaService {
       Delimeter: '/',
       Prefix: 'media/plangicons/',
     };
-    const {
-      Name,
-      $metadata: response,
-      Contents: images,
-    } = await this.s3Client.send(new ListObjectsCommand(listParams));
+    const { $metadata: response, Contents: images } = await this.s3Client.send(
+      new ListObjectsCommand(listParams),
+    );
+    if (response.httpStatusCode === 200) {
+      const imageUrls = [];
+      for (const image of images) {
+        if (image.Size > 0) {
+          const obj = {};
+          obj['url'] = `${process.env.STATIC_BASE_URL}/${image.Key}`;
+          imageUrls.push(obj);
+        }
+      }
+      return imageUrls;
+    }
+  }
+
+  async getProjectImages() {
+    const listParams = {
+      Bucket: this.s3BucketName,
+      Delimeter: '/',
+      Prefix: 'media/projects/',
+    };
+    const { $metadata: response, Contents: images } = await this.s3Client.send(
+      new ListObjectsCommand(listParams),
+    );
     if (response.httpStatusCode === 200) {
       const imageUrls = [];
       for (const image of images) {
@@ -107,11 +124,9 @@ export class MediaService {
       Delimeter: '/',
       Prefix: 'media/cv/',
     };
-    const {
-      Name,
-      $metadata: response,
-      Contents: files,
-    } = await this.s3Client.send(new ListObjectsCommand(listParams));
+    const { $metadata: response, Contents: files } = await this.s3Client.send(
+      new ListObjectsCommand(listParams),
+    );
     if (response.httpStatusCode === 200) {
       let cvUrl;
       for (const file of files) {
