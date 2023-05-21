@@ -1,10 +1,12 @@
 import { Controller, Get, Req, Res } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import { Request, Response } from 'express';
 import { MediaService } from './media.service';
 
 @Controller()
 export class MediaController {
   constructor(private mediaService: MediaService) {}
+  @SkipThrottle()
   @Get()
   sayHello() {
     return `Backend is up!`;
