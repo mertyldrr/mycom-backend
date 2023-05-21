@@ -1,7 +1,15 @@
 import { Module } from '@nestjs/common';
-import { MediaModule } from './photo/media.module';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { MediaModule } from './mycom/media/media.module';
+import { NewsModule } from './win11/news.module';
 
 @Module({
-  imports: [MediaModule],
+  imports: [
+    MediaModule,
+    NewsModule,
+    ThrottlerModule.forRoot({ ttl: 86400, limit: 1000 }),
+  ],
+  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {}
