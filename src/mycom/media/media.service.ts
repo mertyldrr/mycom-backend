@@ -80,15 +80,26 @@ export class MediaService {
       Delimeter: '/',
       Prefix: 'media/plangicons/',
     };
-    const { $metadata: response, Contents: images } = await this.s3Client.send(
-      new ListObjectsCommand(listParams),
-    );
+    const {
+      Name,
+      $metadata: response,
+      Contents: images,
+    } = await this.s3Client.send(new ListObjectsCommand(listParams));
     if (response.httpStatusCode === 200) {
       const imageUrls = [];
       for (const image of images) {
         if (image.Size > 0) {
           const obj = {};
+          const headObjectParams = {
+            Bucket: Name,
+            Key: image.Key,
+          };
+          const headObjectCommand = new HeadObjectCommand(headObjectParams);
+          const { Metadata: metadata } = await this.s3Client.send(
+            headObjectCommand,
+          );
           obj['url'] = `${process.env.STATIC_BASE_URL}/${image.Key}`;
+          obj['name'] = metadata.name;
           imageUrls.push(obj);
         }
       }
